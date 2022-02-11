@@ -31,6 +31,7 @@ gem "cssbundling-rails"
 gem "jbuilder"
 
 gem "rack-oauth2"
+gem "jwt"
 
 # Use Redis adapter to run Action Cable in production
 # gem "redis", "~> 4.0"
