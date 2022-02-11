@@ -66,6 +66,9 @@ GEM
       i18n (>= 1.6, < 2)
       minitest (>= 5.1)
       tzinfo (~> 2.0)
+    aes_key_wrap (1.1.0)
+    attr_required (1.0.1)
+    bindata (2.4.10)
     bindex (0.8.1)
     bootsnap (1.11.1)
       msgpack (~> 1.2)
@@ -81,6 +84,7 @@ GEM
     erubi (1.10.0)
     globalid (1.0.0)
       activesupport (>= 5.0)
+    httpclient (2.8.3)
     i18n (1.10.0)
       concurrent-ruby (~> 1.0)
     io-console (0.5.11)
@@ -92,6 +96,10 @@ GEM
       activesupport (>= 5.0.0)
     jsbundling-rails (1.0.2)
       railties (>= 6.0.0)
+    json-jwt (1.13.0)
+      activesupport (>= 4.2)
+      aes_key_wrap
+      bindata
     loofah (2.15.0)
       crass (~> 1.0.2)
       nokogiri (>= 1.5.9)
@@ -125,6 +133,12 @@ GEM
       nio4r (~> 2.0)
     racc (1.6.0)
     rack (2.2.3)
+    rack-oauth2 (1.19.0)
+      activesupport
+      attr_required
+      httpclient
+      json-jwt (>= 1.11.0)
+      rack (>= 2.1.0)
     rack-test (1.1.0)
       rack (>= 1.0, < 3)
     rails (7.0.2.3)
@@ -194,6 +208,7 @@ DEPENDENCIES
   jsbundling-rails
   pg (~> 1.1)
   puma (~> 5.0)
+  rack-oauth2
   rails (~> 7.0.2, >= 7.0.2.3)
   sprockets-rails
   stimulus-rails
