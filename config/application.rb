@@ -30,6 +30,7 @@ module Dropin
     #
     # config.time_zone = "Central Time (US & Canada)"
     # config.eager_load_paths << Rails.root.join("extras")
+    config.time_zone = ENV['DROPIN_TIME_ZONE'] || 'UTC'
 
     # Don't generate system test files.
     config.generators.system_tests = nil

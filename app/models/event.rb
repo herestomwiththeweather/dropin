@@ -29,7 +29,7 @@ class Event < ApplicationRecord
       event = selected_events.first
       create(
         identifier: event['id'],
-        start_at: Time.parse(event['attributes']['start']), # start time is not in UTC so use Time.parse() to fix that
+        start_at: event['attributes']['start'].in_time_zone, # start time is not in UTC so use in_time_zone to fix that
         category: category
       )
     end
