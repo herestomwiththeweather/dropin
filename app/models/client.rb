@@ -29,14 +29,42 @@ class Client < ApplicationRecord
     access_tokens.order('created_at DESC').first
   end
 
-  def get_events
-    get_token if access_token.nil?
-    u = URI.parse("#{DASH_BASE_URL}/#{DASH_VERSION}/events?company=#{company}")
+  def request(path)
+    u = URI.parse("#{DASH_BASE_URL}/#{DASH_VERSION}/#{path}")
     http = ::Net::HTTP.new(u.host, u.port)
     http.use_ssl = true
     http.verify_mode = OpenSSL::SSL::VERIFY_NONE
-    request = ::Net::HTTP::Get.new(u.request_uri)
-    request['Authorization'] = "Bearer #{access_token.token}"
-    response = http.request(request)
+    req = ::Net::HTTP::Get.new(u.request_uri)
+    req['Authorization'] = "Bearer #{access_token.token}"
+    response = http.request(req)
+  end
+
+  def get_event(event_id)
+    get_token if (access_token.nil? || access_token.expired?)
+    request("events/#{event_id}?company=#{company}&include=registrants")
+  end
+
+  def get_people(event_id)
+    e = get_event(event_id)
+    event = JSON.parse(e.body)
+    nil == event['included'] ? [] : event['included'].map {|person| person['attributes']['full_name']}
+  end
+
+  def get_players
+    players_event_id = Event.upcoming_event_id_by_category(Event::PLAYERS)
+    if nil == players_event_id
+      []
+    else
+      get_people(players_event_id)
+    end
+  end
+
+  def get_goalies
+    goalies_event_id = Event.upcoming_event_id_by_category(Event::GOALIES)
+    if nil == goalies_event_id
+      []
+    else
+      get_people(goalies_event_id)
+    end
   end
 end
