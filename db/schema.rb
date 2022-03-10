@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_03_06_193839) do
+ActiveRecord::Schema[7.0].define(version: 2022_03_10_094416) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -36,7 +36,26 @@ ActiveRecord::Schema[7.0].define(version: 2022_03_06_193839) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "category", default: 0
+    t.datetime "last_fetched_at"
+  end
+
+  create_table "people", force: :cascade do |t|
+    t.integer "identifier"
+    t.string "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "registrations", force: :cascade do |t|
+    t.bigint "event_id", null: false
+    t.bigint "person_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["event_id"], name: "index_registrations_on_event_id"
+    t.index ["person_id"], name: "index_registrations_on_person_id"
   end
 
   add_foreign_key "access_tokens", "clients"
+  add_foreign_key "registrations", "events"
+  add_foreign_key "registrations", "people"
 end

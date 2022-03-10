@@ -1,4 +1,4 @@
-<h1>Players</h1>
+<h1><strong>Players</strong></h1>
 <div id="players">
 <% i = 1 %>
   <% @players.each do |player| %>
@@ -6,9 +6,12 @@
     <% i += 1 %>
   <% end %>
 </div>
-<h1>Goalies</h1>
+<h1><strong>Goalies</strong></h1>
 <div id="goalies">
   <% @goalies.each do |goalie| %>
     <div><%= goalie %></div>
   <% end %>
+</div>
+<div class="py-2">
+  <strong>Last refreshed: <%= time_ago_in_words(@players_event.last_fetched_at) %> ago</strong>
 </div>
