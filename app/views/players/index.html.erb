@@ -13,5 +13,7 @@
   <% end %>
 </div>
 <div class="py-2">
+  <% if @players_event&.last_fetched_at.present? %>
   <strong>Last refreshed: <%= time_ago_in_words(@players_event.last_fetched_at) %> ago</strong>
+  <% end %>
 </div>
