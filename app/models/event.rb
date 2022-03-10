@@ -65,6 +65,7 @@ class Event < ApplicationRecord
   end
 
   def get_people
+    refresh_people if last_fetched_at.nil?
     if Time.now < last_fetched_at + CACHE_TIME_INTERVAL
       cached_people
     else
