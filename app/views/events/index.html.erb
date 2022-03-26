@@ -1,0 +1,9 @@
+<%= month_calendar(events: @events, attribute: :start_at) do |date, events| %>
+  <%= date.strftime('%d') %>
+  <% events.each do |event| %>
+    <div>
+      <%= event.start_at.strftime('%l:%M%P') %> <%= link_to(Event::CATEGORY_SHORT_TEXT[event.category], event, 'data-controller': 'turbo') %>
+    </div>
+  <% end %>
+
+<% end %>

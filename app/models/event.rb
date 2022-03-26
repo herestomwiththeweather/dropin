@@ -11,6 +11,11 @@ class Event < ApplicationRecord
     GOALIES => "Drop-in March Goalie"
   }
 
+  CATEGORY_SHORT_TEXT = {
+    PLAYERS => "Players",
+    GOALIES => "Goalies"
+  }
+
   CACHE_TIME_INTERVAL = 3.minutes
 
   validates :identifier, presence: true, uniqueness: true

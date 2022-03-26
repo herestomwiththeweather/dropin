@@ -1,0 +1,12 @@
+<div id="players">
+<% i = 1 %>
+  <% event.get_people.each do |player| %>
+    <div><%= i %>. <%= player %></div>
+    <% i += 1 %>
+  <% end %>
+</div>
+<div class="py-2">
+  <% if event&.last_fetched_at.present? %>
+  <strong>Last refreshed: <%= time_ago_in_words(event.last_fetched_at) %> ago</strong>
+  <% end %>
+</div>
