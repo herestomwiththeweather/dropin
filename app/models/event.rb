@@ -50,6 +50,10 @@ class Event < ApplicationRecord
       # find the earliest start_at after the current time (minus one hour)
       where(category: event_category).where('start_at > ?', 90.minutes.ago).order('start_at ASC').first
     end
+
+    def monthly_events(start_date)
+      where(start_at: start_date.beginning_of_month..start_date.end_of_month+1)
+    end
   end
 
   def cached_people

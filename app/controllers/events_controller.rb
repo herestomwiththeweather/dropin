@@ -1,7 +1,6 @@
 class EventsController < ApplicationController
   def index
-    start_date = params.fetch(:start_date, Date.today).to_date
-    @events = Event.where(start_at: start_date.beginning_of_month..start_date.end_of_month)
+    @events = Event.monthly_events(params.fetch(:start_date, Date.today).to_date)
   end
 
   def show
