@@ -73,12 +73,17 @@ class Event < ApplicationRecord
     people_array.map {|p| p[1]}
   end
 
+  def refresh_data?
+    # Only refresh data if current time is before start time and its been greater than CACHE_TIME_INTERVAL since the last refresh
+    (Time.now < start_at) && (Time.now > last_fetched_at + CACHE_TIME_INTERVAL)
+  end
+
   def get_people
     refresh_people if last_fetched_at.nil?
-    if Time.now < last_fetched_at + CACHE_TIME_INTERVAL
-      cached_people
-    else
+    if refresh_data?
       refresh_people
+    else
+      cached_people
     end
   end
 end
