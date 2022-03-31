@@ -7,8 +7,8 @@ class Event < ApplicationRecord
   CATEGORIES = [PLAYERS, GOALIES]
 
   CATEGORY_TEXT = {
-    PLAYERS => "Drop-in March Player",
-    GOALIES => "Drop-in March Goalie"
+    PLAYERS => "Drop-in April Player",
+    GOALIES => "Drop-in April Goalie"
   }
 
   CATEGORY_SHORT_TEXT = {
