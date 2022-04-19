@@ -86,4 +86,8 @@ class Event < ApplicationRecord
       cached_people
     end
   end
+
+  def count
+    registrations.count
+  end
 end
