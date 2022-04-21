@@ -5,10 +5,16 @@ const start_time_elem = document.getElementById('start_time')
 
 const player_response = await fetch("https://<%= @host %>/today_player_count")
 const players = await player_response.json()
-players_elem.innerHTML = players.count
-start_time_elem.innerHTML = players.start_time
+if(players_elem) {
+  players_elem.innerHTML = players.count
+}
+if(start_time_elem) {
+  start_time_elem.innerHTML = players.start_time
+}
 
 const goalie_response = await fetch("https://<%= @host %>/today_goalie_count")
 const goalies = await goalie_response.json()
-goalies_elem.innerHTML = goalies.count
+if(goalies_elem) {
+  goalies_elem.innerHTML = goalies.count
+}
 })()
