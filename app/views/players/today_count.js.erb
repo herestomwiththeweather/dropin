@@ -1,11 +1,14 @@
 (async () => {
+const players_elem = document.getElementById('player_count')
+const goalies_elem = document.getElementById('goalie_count')
+const start_time_elem = document.getElementById('start_time')
+
 const player_response = await fetch("https://<%= @host %>/today_player_count")
 const players = await player_response.json()
-const players_elem = document.getElementById('player_count')
-players_elem.innerHTML = players.count;
+players_elem.innerHTML = players.count
+start_time_elem.innerHTML = players.start_time
 
 const goalie_response = await fetch("https://<%= @host %>/today_goalie_count")
 const goalies = await goalie_response.json()
-const goalies_elem = document.getElementById('goalie_count')
-goalies_elem.innerHTML = goalies.count;
+goalies_elem.innerHTML = goalies.count
 })()

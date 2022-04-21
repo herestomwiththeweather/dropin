@@ -90,4 +90,8 @@ class Event < ApplicationRecord
   def count
     registrations.count
   end
+
+  def start_time
+    start_at.to_s(:rfc822)
+  end
 end

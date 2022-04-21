@@ -1,1 +1,1 @@
-json.extract! @event, :count
+json.extract! @event, :count, :start_time
