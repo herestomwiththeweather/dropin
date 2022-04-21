@@ -88,6 +88,8 @@ class Event < ApplicationRecord
   end
 
   def count
+    refresh_people if last_fetched_at.nil?
+    refresh_people if refresh_data?
     registrations.count
   end
 
