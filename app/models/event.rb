@@ -2,18 +2,25 @@ class Event < ApplicationRecord
   has_many :registrations
   has_many :people, through: :registrations
 
+  scope :monthly, -> (start_date) { where(start_at: start_date.beginning_of_month..start_date.end_of_month+1) }
+  scope :by_category, -> (category) { where(category: category) }
+  scope :exclude_category, -> (category) { where.not(category: category) }
+
   PLAYERS = 1
   GOALIES = 2
-  CATEGORIES = [PLAYERS, GOALIES]
+  FREESTYLE = 3
+  CATEGORIES = [PLAYERS, GOALIES, FREESTYLE]
 
   CATEGORY_TEXT = {
     PLAYERS => "Drop-in May Player",
-    GOALIES => "Drop-in May Goalie"
+    GOALIES => "Drop-in May Goalie",
+    FREESTYLE => "Freestyle"
   }
 
   CATEGORY_SHORT_TEXT = {
     PLAYERS => "Players",
-    GOALIES => "Goalies"
+    GOALIES => "Goalies",
+    FREESTYLE => "Freestyle"
   }
 
   CACHE_TIME_INTERVAL = 3.minutes
@@ -36,13 +43,13 @@ class Event < ApplicationRecord
 
       CATEGORIES.each do |category|
         selected_events = events['data'].select {|e| e['attributes']['desc'] == CATEGORY_TEXT[category]}
-        raise "add_next_dropin #{target_date}" if 1 != selected_events.length 
-        event = selected_events.first
-        create(
-          identifier: event['id'],
-          start_at: event['attributes']['start'].in_time_zone, # start time is not in UTC so use in_time_zone to fix that
-          category: category
-        )
+        selected_events.each do |event|
+          create(
+            identifier: event['id'],
+            start_at: event['attributes']['start'].in_time_zone, # start time is not in UTC so use in_time_zone to fix that
+            category: category
+          )
+        end
       end
     end
 
@@ -51,13 +58,17 @@ class Event < ApplicationRecord
       where(category: event_category).where('start_at > ?', 90.minutes.ago).order('start_at ASC').first
     end
 
-    def monthly_events(start_date)
-      where(start_at: start_date.beginning_of_month..start_date.end_of_month+1)
+    def monthly_events(start_date, category)
+      if 'freestyle' == category
+        monthly(start_date).by_category(FREESTYLE)
+      else
+        monthly(start_date).exclude_category(FREESTYLE)
+      end
     end
   end
 
   def cached_people
-    people.map(&:name)
+    people.map(&:short_name)
   end
 
   def refresh_people
@@ -70,7 +81,7 @@ class Event < ApplicationRecord
       person = Person.find_or_create_by(identifier: p[0], name: p[1])
       registration = Registration.find_or_create_by(person: person, event: self)
     end
-    people_array.map {|p| p[1]}
+    people_array.map {|p| p[1][0..p[1].index(' ')+1].concat('.')}
   end
 
   def refresh_data?

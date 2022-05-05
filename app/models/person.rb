@@ -7,4 +7,8 @@ class Person < ApplicationRecord
   def to_param
     identifier
   end
+
+  def short_name
+    name[0..name.index(' ')+1].concat('.')
+  end
 end
