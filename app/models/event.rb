@@ -23,6 +23,12 @@ class Event < ApplicationRecord
     FREESTYLE => "Freestyle"
   }
 
+  CATEGORY_FULL_NAME = {
+    PLAYERS => true,
+    GOALIES => true,
+    FREESTYLE => false
+  }
+
   CACHE_TIME_INTERVAL = 3.minutes
 
   validates :identifier, presence: true, uniqueness: true
@@ -68,7 +74,7 @@ class Event < ApplicationRecord
   end
 
   def cached_people
-    people.map(&:short_name)
+    CATEGORY_FULL_NAME[self.category] ? people.map(&:name) : people.map(&:short_name)
   end
 
   def refresh_people
@@ -81,7 +87,7 @@ class Event < ApplicationRecord
       person = Person.find_or_create_by(identifier: p[0], name: p[1])
       registration = Registration.find_or_create_by(person: person, event: self)
     end
-    people_array.map {|p| p[1][0..p[1].index(' ')+1].concat('.')}
+    people_array.map {|p| CATEGORY_FULL_NAME[self.category] ? p[1] : p[1][0..p[1].index(' ')+1].concat('.')}
   end
 
   def refresh_data?
