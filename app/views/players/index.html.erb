@@ -1,9 +1,11 @@
 <%= turbo_stream_from(@players_event, :registrations) %>
 <%= turbo_stream_from(@goalies_event, :registrations) %>
-<div>
+<div style="margin: 20px">
+<div style="margin-bottom: 10px">
   <strong>Start time: </strong><%= @players_event.start_time %>
 </div>
-<h3><strong>Players</strong></h1>
+<h4><strong>Players</strong></h4>
 <%= render "registrations/list", event: @players_event %>
-<h3><strong>Goalies</strong></h1>
+<h4 style="margin-top: 10px"><strong>Goalies</strong></h4>
 <%= render "registrations/list", event: @goalies_event %>
+</div>
