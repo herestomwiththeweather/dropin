@@ -1,22 +1,9 @@
+<%= turbo_stream_from(@players_event, :registrations) %>
+<%= turbo_stream_from(@goalies_event, :registrations) %>
 <div>
   <strong>Start time: </strong><%= @players_event.start_time %>
 </div>
-<h1><strong>Players</strong></h1>
-<div id="players">
-<% i = 1 %>
-  <% @players.each do |player| %>
-    <div><%= i %>. <%= player %></div>
-    <% i += 1 %>
-  <% end %>
-</div>
-<h1><strong>Goalies</strong></h1>
-<div id="goalies">
-  <% @goalies.each do |goalie| %>
-    <div><%= goalie %></div>
-  <% end %>
-</div>
-<div class="py-2">
-  <% if @players_event&.last_fetched_at.present? %>
-  <strong>Last refreshed: <%= time_ago_in_words(@players_event.last_fetched_at) %> ago</strong>
-  <% end %>
-</div>
+<h3><strong>Players</strong></h1>
+<%= render "registrations/list", event: @players_event %>
+<h3><strong>Goalies</strong></h1>
+<%= render "registrations/list", event: @goalies_event %>

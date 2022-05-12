@@ -1,0 +1,6 @@
+<%= turbo_frame_tag("event_#{event.id}-registrations") do %>
+  <% event.registrations.each do |registration| %>
+    <%= render(registration) %>
+  <% end %>
+<% end %>
+
