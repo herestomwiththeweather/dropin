@@ -30,6 +30,7 @@ class Event < ApplicationRecord
   }
 
   CACHE_TIME_INTERVAL = 3.minutes
+  MARGIN_INTERVAL = 15.minutes
 
   validates :identifier, presence: true, uniqueness: true
   validates :category, inclusion: {in: CATEGORIES}
@@ -92,7 +93,7 @@ class Event < ApplicationRecord
 
   def refresh_data?
     # Only refresh data if current time is before start time and its been greater than CACHE_TIME_INTERVAL since the last refresh
-    (Time.now < start_at) && (Time.now > last_fetched_at + CACHE_TIME_INTERVAL)
+    (Time.now < start_at + MARGIN_INTERVAL) && (Time.now > last_fetched_at + CACHE_TIME_INTERVAL)
   end
 
   def get_people
