@@ -86,6 +86,7 @@ class Event < ApplicationRecord
     people_array = nil == event['included'] ? [] : event['included'].map {|person| [person['id'],person['attributes']['full_name']]}
     people_array.each do |p|
       person = Person.find_or_create_by!(identifier: p[0])
+      person.update_attribute(:name, p[1]) if p[1] != person.name
       registration = Registration.find_or_create_by(person: person, event: self)
     end
     people_array.map {|p| CATEGORY_FULL_NAME[self.category] ? p[1] : p[1][0..p[1].index(' ')+1].concat('.')}
