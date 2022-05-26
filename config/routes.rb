@@ -8,4 +8,6 @@ Rails.application.routes.draw do
   # Defines the root path route ("/")
   root "events#about"
   get '/cal' => 'events#index', as: :calendar
+  get '/upcoming' => 'events#upcoming', as: :upcoming
+  get '/search' => 'events#upcoming', as: :search
 end
