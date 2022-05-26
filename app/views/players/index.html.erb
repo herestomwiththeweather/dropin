@@ -1,6 +1,7 @@
 <%= turbo_stream_from(@players_event, :registrations) %>
 <%= turbo_stream_from(@goalies_event, :registrations) %>
-<div style="margin: 20px">
+<div style="margin: 20px" data-controller="board">
+<button data-action="click->board#upcoming">Ping</button>
 <div style="margin-bottom: 10px">
   <strong>Start time: </strong><%= @players_event.start_at.strftime('%b %e, %l:%M %p') %>
 </div>

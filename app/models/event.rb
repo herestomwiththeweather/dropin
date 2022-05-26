@@ -61,8 +61,13 @@ class Event < ApplicationRecord
     end
 
     def upcoming_event_by_category(event_category)
-      # find the earliest start_at after the current time (minus one hour)
+      # find the earliest start_at after the current time (minus 1.5 hours)
       where(category: event_category).where('start_at > ?', 90.minutes.ago).order('start_at ASC').first
+    end
+
+    def upcoming_event
+      # find the earliest start_at after the current time (minus 30 minutes)
+      where('start_at > ?', 30.minutes.ago).order('start_at ASC').first
     end
 
     def monthly_events(start_date, category)
@@ -114,5 +119,9 @@ class Event < ApplicationRecord
 
   def start_time
     start_at.to_s(:rfc822)
+  end
+
+  def people_text
+    CATEGORY_SHORT_TEXT[category]
   end
 end
