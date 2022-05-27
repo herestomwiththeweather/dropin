@@ -9,14 +9,7 @@ class EventsController < ApplicationController
       event_id = params[:event_identifier]
       Rails.logger.info "events#upcoming() received event id: #{event_id}"
     end
-    @event = Event::upcoming_event
-    @event2 = nil
-    if Event::PLAYERS == @event.category
-      @event2 = Event::upcoming_event_by_category(Event::GOALIES)
-    end
-    if Event::GOALIES == @event.category
-      @event2 = Event::upcoming_event_by_category(Event::PLAYERS)
-    end
+    @event, @next_event = Event::upcoming_events
   end
 
   def show

@@ -70,6 +70,11 @@ class Event < ApplicationRecord
       where('start_at > ?', 30.minutes.ago).order('start_at ASC').first
     end
 
+    def upcoming_events
+      events = where('start_at > ?', 30.minutes.ago).where.not(category: GOALIES).order('start_at ASC')
+      [events.first, events.second]
+    end
+
     def monthly_events(start_date, category)
       if 'freestyle' == category
         monthly(start_date).by_category(FREESTYLE)
@@ -77,6 +82,10 @@ class Event < ApplicationRecord
         monthly(start_date).exclude_category(FREESTYLE)
       end
     end
+  end
+
+  def sibling
+    Event.where(start_at: start_at).where.not(category: category).first
   end
 
   def cached_people

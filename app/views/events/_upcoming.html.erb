@@ -1,0 +1,16 @@
+<% event2 = event.sibling if Event::PLAYERS == event.category %>
+
+<%= turbo_stream_from(event, :registrations) %>
+<% if event2.present? %>
+  <%= turbo_stream_from(event2, :registrations) %>
+<% end %>
+
+<div style="margin-bottom: 10px">
+  <strong>Start time: </strong><%= event.start_at.strftime('%b %e, %l:%M %p') %>
+</div>
+<h4><strong><%= event.people_text %></strong></h4>
+<%= render "registrations/list", event: event %>
+<% if event2.present? %>
+  <h4><strong><%= event2.people_text %></strong></h4>
+  <%= render "registrations/list", event: event2 %>
+<% end %>
