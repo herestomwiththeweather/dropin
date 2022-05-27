@@ -88,6 +88,18 @@ class Event < ApplicationRecord
     Event.where(start_at: start_at).where.not(category: category).first
   end
 
+  def board_refresh_data?
+    # To keep board data updated, refresh if current time is later than 60 minutes befoe event's starting time
+    refresh_data? && Time.now > start_at - 60.minutes
+  end
+
+  def board_refresh
+    refresh_people if last_fetched_at.nil?
+    if board_refresh_data?
+      refresh_people
+    end
+  end
+
   def cached_people
     CATEGORY_FULL_NAME[self.category] ? people.map(&:name) : people.map(&:short_name)
   end
