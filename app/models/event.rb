@@ -11,10 +11,10 @@ class Event < ApplicationRecord
   FREESTYLE = 3
   CATEGORIES = [PLAYERS, GOALIES, FREESTYLE]
 
-  CATEGORY_TEXT = {
-    PLAYERS => "Drop-in May Player",
-    GOALIES => "Drop-in May Goalie",
-    FREESTYLE => "Freestyle"
+  CATEGORY_REGEX = {
+    PLAYERS => /Player/,
+    GOALIES => /Goalie/,
+    FREESTYLE => /Freestyle/
   }
 
   CATEGORY_SHORT_TEXT = {
@@ -42,6 +42,10 @@ class Event < ApplicationRecord
       client.request("events?company=#{client.company}&filter[end__gte]=#{event_date}T00:00:00&filter[start__lt]=#{day_after}T00:00:00")
     end
 
+    def category_match?(description, category)
+      description =~ CATEGORY_REGEX[category]
+    end
+
     def add_dropin(target_date)
       #target_date = '2022-03-08'
 
@@ -49,7 +53,7 @@ class Event < ApplicationRecord
       events = JSON.parse(resp.body)
 
       CATEGORIES.each do |category|
-        selected_events = events['data'].select {|e| e['attributes']['desc'] == CATEGORY_TEXT[category]}
+        selected_events = events['data'].select {|e| category_match?(e['attributes']['desc'], category)}
         selected_events.each do |event|
           create(
             identifier: event['id'],
