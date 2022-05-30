@@ -43,7 +43,7 @@ class Event < ApplicationRecord
     end
 
     def category_match?(description, category)
-      description =~ CATEGORY_REGEX[category]
+      description =~ CATEGORY_REGEX[category] && description =~ /^(?!Takedown).*$/
     end
 
     def add_dropin(target_date)
