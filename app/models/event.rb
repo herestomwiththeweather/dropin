@@ -11,12 +11,6 @@ class Event < ApplicationRecord
   FREESTYLE = 3
   CATEGORIES = [PLAYERS, GOALIES, FREESTYLE]
 
-  CATEGORY_REGEX = {
-    PLAYERS => /Player/,
-    GOALIES => /Goalie/,
-    FREESTYLE => /Freestyle/
-  }
-
   CATEGORY_SHORT_TEXT = {
     PLAYERS => "Players",
     GOALIES => "Goalies",
@@ -43,7 +37,14 @@ class Event < ApplicationRecord
     end
 
     def category_match?(description, category)
-      description =~ CATEGORY_REGEX[category] && description =~ /^(?!Takedown).*$/
+      description =~ /^(?!Takedown).*$/ && case category
+      when PLAYERS
+        description =~ /Player/ || (description =~ /^Drop/ && description =~ /^((?!Goalie).)*$/)
+      when GOALIES
+        description =~ /Goalie/
+      when FREESTYLE
+        description =~ /Freestyle/
+      end
     end
 
     def add_dropin(target_date)
