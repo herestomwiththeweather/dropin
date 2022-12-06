@@ -110,6 +110,7 @@ class Event < ApplicationRecord
   end
 
   def refresh_people
+    registration_ids = self.registrations.map(&:id)
     update_attribute(:last_fetched_at, Time.now)
     client = Client.first
     event_response = client.get_event(identifier)
@@ -119,6 +120,13 @@ class Event < ApplicationRecord
       person = Person.find_or_create_by!(identifier: p[0])
       person.update_attribute(:name, p[1]) if p[1] != person.name
       registration = Registration.find_or_create_by(person: person, event: self)
+      registration_ids.reject! {|i| registration.id == i}
+    end
+    registration_ids.each do |registration_id|
+      registration_to_delete = Registration.find(registration_id)
+      p = registration_to_delete.person
+      Rails.logger.info "Deleting registration for #{p.name} (#{p.id}) for event #{self.id}"
+      registration_to_delete.destroy
     end
     people_array.map {|p| CATEGORY_FULL_NAME[self.category] ? p[1] : p[1][0..p[1].index(' ')+1].concat('.')}
   end
