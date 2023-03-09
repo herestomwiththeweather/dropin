@@ -39,7 +39,7 @@ class Event < ApplicationRecord
     def category_match?(description, category)
       description =~ /^(?!Takedown).*$/ && case category
       when PLAYERS
-        description =~ /Player/ || (description =~ /Drop/ && description =~ /^((?!Goalie).)*$/)
+        description =~ /Player/ || ((description =~ /Drop/ || description =~ /Stick & Puck/) && description =~ /^((?!Goalie).)*$/)
       when GOALIES
         description =~ /Goalie/
       when FREESTYLE
