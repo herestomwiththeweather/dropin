@@ -1,6 +1,26 @@
 require 'rails_helper'
 
 RSpec.describe Event, type: :model do
+
+  let(:client) { create :client }
+  let(:other_client) { create :client }
+
+  describe "When creating an event" do
+    before do
+      other_event = create :event, client_id: other_client.id, identifier: '12345'
+    end
+
+    it "should allow the same identifier to be used by two events from different clients" do
+      event = Event.new(client_id: client.id, identifier: '12345', category: Event::PLAYERS)
+      expect(event).to be_valid
+    end
+
+    it "should not allow the same identifier to be used by two events from the same client" do
+      event = Event.new(client_id: other_client.id, identifier: '12345', category: Event::PLAYERS)
+      expect(event.errors[:identifier]).to include("has already been taken")
+    end
+  end
+
   describe "When matching events by category" do
     before do
       @players_description = "Drop-ins Summer Player 15 & up"

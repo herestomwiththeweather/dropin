@@ -29,7 +29,7 @@ class Event < ApplicationRecord
   CACHE_TIME_INTERVAL = 3.minutes
   MARGIN_INTERVAL = 15.minutes
 
-  validates :identifier, presence: true, uniqueness: true
+  validates :identifier, presence: true, uniqueness: { scope: :client_id }
   validates :category, inclusion: {in: CATEGORIES}
 
   class << self
