@@ -8,6 +8,11 @@ DASH_VERSION = 'v1'
 class Client < ApplicationRecord
   has_many :access_tokens
 
+  def get_events(event_date)
+    day_after = (Time.parse(event_date) + 1.day.in_seconds).strftime('%Y-%m-%d')
+    request("events?company=#{company}&filter[end__gte]=#{event_date}T00:00:00&filter[start__lt]=#{day_after}T00:00:00")
+  end
+
   def get_token
     u = URI.parse(DASH_BASE_URL)
     http = ::Net::HTTP.new(u.host, u.port)

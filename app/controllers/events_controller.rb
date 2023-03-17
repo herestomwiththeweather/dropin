@@ -1,6 +1,11 @@
 class EventsController < ApplicationController
   def index
-    @events = Event.monthly_events(params.fetch(:start_date, Date.today).to_date, params[:category])
+    if params[:id].present?
+      client = Client.where(company: params[:id]).first
+    else
+      client = Client.find(Event::DEFAULT_CLIENT_ID)
+    end
+    @events = Event.monthly_events(client, params.fetch(:start_date, Date.today).to_date, params[:category])
   end
 
   def upcoming

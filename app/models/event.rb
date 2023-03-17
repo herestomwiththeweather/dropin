@@ -4,7 +4,10 @@ class Event < ApplicationRecord
 
   scope :monthly, -> (start_date) { where(start_at: start_date.beginning_of_month..start_date.end_of_month+1) }
   scope :by_category, -> (category) { where(category: category) }
+  scope :by_client_id, -> (client_id) { where(client_id: client_id) }
   scope :exclude_category, -> (category) { where.not(category: category) }
+
+  DEFAULT_CLIENT_ID = 1
 
   PLAYERS = 1
   GOALIES = 2
@@ -30,12 +33,6 @@ class Event < ApplicationRecord
   validates :category, inclusion: {in: CATEGORIES}
 
   class << self
-    def get_events(event_date)
-      day_after = (Time.parse(event_date) + 1.day.in_seconds).strftime('%Y-%m-%d')
-      client = Client.first
-      client.request("events?company=#{client.company}&filter[end__gte]=#{event_date}T00:00:00&filter[start__lt]=#{day_after}T00:00:00")
-    end
-
     def category_match?(description, category)
       description =~ /^(?!Takedown).*$/ && case category
       when PLAYERS
@@ -47,16 +44,20 @@ class Event < ApplicationRecord
       end
     end
 
-    def add_dropin(target_date)
+    def add_dropin(target_date, company)
       #target_date = '2022-03-08'
 
-      resp = get_events(target_date)
+      client = Client.where(company: company).first
+      return nil if client.nil?
+
+      resp = client.get_events(target_date)
       events = JSON.parse(resp.body)
 
       CATEGORIES.each do |category|
         selected_events = events['data'].select {|e| category_match?(e['attributes']['desc'], category)}
         selected_events.each do |event|
           create(
+            client_id: client.id,
             identifier: event['id'],
             start_at: event['attributes']['start'].in_time_zone, # start time is not in UTC so use in_time_zone to fix that
             category: category
@@ -72,19 +73,19 @@ class Event < ApplicationRecord
 
     def upcoming_event
       # find the earliest start_at after the current time (minus 30 minutes)
-      where('start_at > ?', 30.minutes.ago).order('start_at ASC').first
+      where('start_at > ?', 30.minutes.ago).by_client_id(DEFAULT_CLIENT_ID).order('start_at ASC').first
     end
 
     def upcoming_events
-      events = where('start_at > ?', 30.minutes.ago).where.not(category: GOALIES).order('start_at ASC')
+      events = where('start_at > ?', 30.minutes.ago).by_client_id(DEFAULT_CLIENT_ID).where.not(category: GOALIES).order('start_at ASC')
       [events.first, events.second]
     end
 
-    def monthly_events(start_date, category)
+    def monthly_events(client, start_date, category)
       if 'freestyle' == category
-        monthly(start_date).by_category(FREESTYLE)
+        monthly(start_date).by_client_id(client.id).by_category(FREESTYLE)
       else
-        monthly(start_date).exclude_category(FREESTYLE)
+        monthly(start_date).by_client_id(client.id).exclude_category(FREESTYLE)
       end
     end
   end
