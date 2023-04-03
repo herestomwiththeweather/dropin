@@ -113,7 +113,6 @@ class Event < ApplicationRecord
   def refresh_people
     registration_ids = self.registrations.map(&:id)
     update_attribute(:last_fetched_at, Time.now)
-    client = Client.first
     event_response = client.get_event(identifier)
     event = JSON.parse(event_response.body)
     people_array = nil == event['included'] ? [] : event['included'].map {|person| [person['id'],person['attributes']['full_name']]}
