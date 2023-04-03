@@ -1,6 +1,7 @@
 class Event < ApplicationRecord
   has_many :registrations
   has_many :people, through: :registrations
+  belongs_to :client
 
   scope :monthly, -> (start_date) { where(start_at: start_date.beginning_of_month..start_date.end_of_month+1) }
   scope :by_category, -> (category) { where(category: category) }

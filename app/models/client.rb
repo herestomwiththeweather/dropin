@@ -7,6 +7,7 @@ DASH_VERSION = 'v1'
 
 class Client < ApplicationRecord
   has_many :access_tokens
+  has_many :events
 
   def get_events(event_date)
     day_after = (Time.parse(event_date) + 1.day.in_seconds).strftime('%Y-%m-%d')
