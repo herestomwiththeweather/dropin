@@ -9,6 +9,7 @@ class Event < ApplicationRecord
   scope :exclude_category, -> (category) { where.not(category: category) }
 
   DEFAULT_CLIENT_ID = 1
+  SECOND_CLIENT_ID = 2
 
   PLAYERS = 1
   GOALIES = 2
@@ -79,6 +80,11 @@ class Event < ApplicationRecord
 
     def upcoming_events
       events = where('start_at > ?', 30.minutes.ago).by_client_id(DEFAULT_CLIENT_ID).where.not(category: GOALIES).order('start_at ASC')
+      [events.first, events.second]
+    end
+
+    def bfree_events
+      events = where('start_at > ?', 30.minutes.ago).by_client_id(SECOND_CLIENT_ID).where(category: FREESTYLE).order('start_at ASC')
       [events.first, events.second]
     end
 

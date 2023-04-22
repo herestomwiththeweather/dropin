@@ -9,5 +9,6 @@ Rails.application.routes.draw do
   root "events#about"
   get '/cal(/:id)' => 'events#index', as: :calendar
   get '/upcoming' => 'events#upcoming', as: :upcoming
+  get '/bfree' => 'events#bfree', as: :bfree
   get '/search' => 'events#upcoming', as: :search
 end

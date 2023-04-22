@@ -1,0 +1,7 @@
+<%= turbo_stream_from(client, event, :registrations) %>
+
+<div style="margin-bottom: 10px">
+  <strong>Start time: </strong><%= event.start_at.strftime('%b %e, %l:%M %p') %>
+</div>
+<h4><strong><%= event.people_text %></strong></h4>
+<%= render "registrations/list", event: event %>

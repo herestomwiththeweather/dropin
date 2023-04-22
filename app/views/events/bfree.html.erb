@@ -1,16 +1,16 @@
 <div style="margin-top: 20px" data-controller="board" data-board-start-value="<%=@event.start_at.to_i %>">
 <%= turbo_frame_tag('search-results') do %>
   <%= turbo_frame_tag('search-form') do %>
-    <%= form_with(url: '/upcoming', method: 'get', data: {'turbo-frame': 'search-results', 'board-target': 'form'}) do %>
+    <%= form_with(url: '/bfree', method: 'get', data: {'turbo-frame': 'search-results', 'board-target': 'form'}) do %>
       <%= hidden_field_tag("event_identifier", "0") %>
     <% end %>
     <div class="container mx-0">
       <div class="row">
         <div class="col-lg-7 col-md-8 col-sm-12">
-          <%= render "upcoming", client: @client, event: @event %>
+          <%= render "bfree", client: @client, event: @event %>
         </div>
         <div class="col-lg-5 col-md-4 col-sm-12">
-          <%= render "upcoming", client: @client, event: @next_event %>
+          <%= render "bfree", client: @client, event: @next_event %>
         </div>
       </div>
     </div>

@@ -1,8 +1,8 @@
 <% event2 = event.sibling if Event::PLAYERS == event.category %>
 
-<%= turbo_stream_from(event, :registrations) %>
+<%= turbo_stream_from(client, event, :registrations) %>
 <% if event2.present? %>
-  <%= turbo_stream_from(event2, :registrations) %>
+  <%= turbo_stream_from(client, event2, :registrations) %>
 <% end %>
 
 <div style="margin-bottom: 10px">
