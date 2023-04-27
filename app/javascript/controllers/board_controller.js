@@ -33,13 +33,13 @@ export default class extends Controller {
         // Called when there's incoming data on the websocket for this channel
         console.log(data)
         console.log('source.startValue: ', source.startValue)
-        if(data.start_at > source.startValue) {
-          console.log('XXX loading new event')
+        if(data.start_at > source.startValue && data.client_id == document.board_clientid) {
+          console.log('XXX loading new event: ', data.event_id)
           document.getElementById('event_identifier').value = data.event_id
           source.startValue = data.start_at // bump current start time for future comparisons
           source.formTarget.requestSubmit()
         } else {
-          console.log('XXX NOT loading new event')
+          console.log('XXX NOT loading event: ', data.event_id)
         }
       },
     })

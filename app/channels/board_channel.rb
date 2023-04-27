@@ -21,6 +21,6 @@ class BoardChannel < ApplicationCable::Channel
     end
     event.board_refresh
     next_event.board_refresh
-    ActionCable.server.broadcast "board", { event_id: event.id, start_at: event.start_at.to_i }
+    ActionCable.server.broadcast "board", { event_id: event.id, client_id: event.client_id, start_at: event.start_at.to_i }
   end
 end
