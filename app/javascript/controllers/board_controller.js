@@ -32,6 +32,7 @@ export default class extends Controller {
       received(data) {
         // Called when there's incoming data on the websocket for this channel
         console.log(data)
+        console.log('source.startValue: ', source.startValue)
         if(data.start_at > source.startValue) {
           console.log('XXX loading new event')
           document.getElementById('event_identifier').value = data.event_id
