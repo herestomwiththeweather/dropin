@@ -1,4 +1,4 @@
-<div style="margin-top: 20px" data-controller="board" data-board-start-value="<%=@event.start_at.to_i %>">
+<div style="margin-top: 20px" data-controller="board" data-board-clientid-value="<%= @event.client_id %>" data-board-start-value="<%=@event.start_at.to_i %>">
 <%= turbo_frame_tag('search-results') do %>
   <%= turbo_frame_tag('search-form') do %>
     <%= form_with(url: '/upcoming', method: 'get', data: {'turbo-frame': 'search-results', 'board-target': 'form'}) do %>

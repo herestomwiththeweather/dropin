@@ -9,8 +9,16 @@ class BoardChannel < ApplicationCable::Channel
   end
 
   def upcoming_event(payload)
-    Rails.logger.info "XXX BoardChannel#upcoming_event #{payload['stored_start_at']}"
-    event, next_event = Event::upcoming_events
+    if Event::DEFAULT_CLIENT_ID == payload['client_id']
+      Rails.logger.info "BoardChannel#upcoming_event Client 1 calling Event::upcoming_events"
+      event, next_event = Event::upcoming_events
+    elsif Event::SECOND_CLIENT_ID == payload['client_id']
+      Rails.logger.info "BoardChannel#upcoming_event Client 2 calling Event::bfree_events"
+      event, next_event = Event::bfree_events
+    else
+      Rails.logger.info "BoardChannel#upcmoing_event Error. unsupported client id"
+      return
+    end
     event.board_refresh
     next_event.board_refresh
     ActionCable.server.broadcast "board", { event_id: event.id, start_at: event.start_at.to_i }

@@ -4,7 +4,7 @@ import { createConsumer, Channel } from "@rails/actioncable"
 // Connects to data-controller="board"
 export default class extends Controller {
 
-  static values = { start: Number }
+  static values = { start: Number, clientid: Number }
   static targets = ['form']
 
   connect() {
@@ -21,6 +21,7 @@ export default class extends Controller {
         // Called when the subscription is ready for use on the server
         let timeoutId = null
         document.board_client = this
+        document.board_clientid = source.clientidValue
         timeoutId = setInterval(source.upcoming, 300000)
       },
 
@@ -45,6 +46,6 @@ export default class extends Controller {
 
   upcoming() {
     console.log('XXX upcoming()')
-    document.board_client.perform("upcoming_event", {stored_start_at: 0})
+    document.board_client.perform("upcoming_event", {stored_start_at: 0, client_id: document.board_clientid})
   }
 }
