@@ -16,6 +16,8 @@ class EventsController < ApplicationController
       Rails.logger.info "events#upcoming() received event id: #{event_id}"
     end
     @event, @next_event = Event::upcoming_events
+    @event.refresh_people
+    @next_event.refresh_people
   end
 
   def bfree
@@ -26,6 +28,8 @@ class EventsController < ApplicationController
       Rails.logger.info "events#bfree() received event id: #{event_id}"
     end
     @event, @next_event = Event::bfree_events
+    @event.refresh_people
+    @next_event.refresh_people
   end
 
   def show
