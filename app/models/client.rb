@@ -10,11 +10,13 @@ class Client < ApplicationRecord
   has_many :events
 
   def get_events(event_date)
+    get_token if (access_token.nil? || access_token.expired?)
     day_after = (Time.parse(event_date) + 1.day.in_seconds).strftime('%Y-%m-%d')
     request("events?company=#{company}&filter[end__gte]=#{event_date}T00:00:00&filter[start__lt]=#{day_after}T00:00:00")
   end
 
   def get_token
+    Rails.logger.info "getting a new token..."
     u = URI.parse(DASH_BASE_URL)
     http = ::Net::HTTP.new(u.host, u.port)
     http.use_ssl = true

@@ -48,6 +48,7 @@ class Event < ApplicationRecord
 
     def add_dropin(target_date, company)
       #target_date = '2022-03-08'
+      num_events_added = 0
 
       client = Client.where(company: company).first
       return nil if client.nil?
@@ -58,6 +59,7 @@ class Event < ApplicationRecord
       CATEGORIES.each do |category|
         selected_events = events['data'].select {|e| category_match?(e['attributes']['desc'], category)}
         selected_events.each do |event|
+          num_events_added += 1
           create(
             client_id: client.id,
             identifier: event['id'],
@@ -66,6 +68,8 @@ class Event < ApplicationRecord
           )
         end
       end
+
+      num_events_added
     end
 
     def upcoming_event_by_category(event_category)

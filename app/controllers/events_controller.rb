@@ -1,4 +1,6 @@
 class EventsController < ApplicationController
+  skip_before_action :verify_authenticity_token, only: [:add]
+
   def index
     if params[:id].present?
       client = Client.where(company: params[:id]).first
@@ -6,6 +8,19 @@ class EventsController < ApplicationController
       client = Client.find(Event::DEFAULT_CLIENT_ID)
     end
     @events = Event.monthly_events(client, params.fetch(:start_date, Date.today).to_date, params[:category])
+  end
+
+  def add
+    @json = JSON.parse(request.body.string)
+    Rails.logger.info "company: #{@json['company']}"
+    Rails.logger.info "date: #{@json['date']}"
+
+    events_added = Event::add_dropin(@json['date'], @json['company'])
+    message = events_added.nil? ? "error" : "#{events_added} events found"
+
+    respond_to do |format|
+      format.html { render plain: message, status: 200 }
+    end
   end
 
   def upcoming
