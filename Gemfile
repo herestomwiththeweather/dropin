@@ -34,6 +34,7 @@ gem "rack-oauth2"
 gem "jwt"
 gem "simple_calendar", "~> 2.4"
 gem "rack-cors"
+gem "exception_notification"
 
 # Use Redis adapter to run Action Cable in production
 gem "redis", "~> 4.0"

@@ -36,5 +36,13 @@ module Dropin
     config.generators.system_tests = nil
 
     config.action_dispatch.default_headers.delete('X-Frame-Options')
+    if ENV['EXCEPTION_NOTIFICATION']
+      config.middleware.use ExceptionNotification::Rack,
+        email: {
+          sender_address: %("Application Error" <app.error@#{ENV['SMTP_DOMAIN']}>),
+          exception_recipients: ENV['EXCEPTION_NOTIFICATION'].split,
+          email_prefix: "[Dropin] "
+        }
+    end
   end
 end
