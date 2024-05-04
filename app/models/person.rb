@@ -1,8 +1,9 @@
 class Person < ApplicationRecord
   has_many :registrations
   has_many :events, through: :registrations
+  belongs_to :client
 
-  validates :identifier, presence: true, uniqueness: true
+  validates :identifier, presence: true, uniqueness: { scope: :client_id }
 
   def to_param
     identifier

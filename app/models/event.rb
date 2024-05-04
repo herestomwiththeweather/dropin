@@ -128,7 +128,7 @@ class Event < ApplicationRecord
     event = JSON.parse(event_response.body)
     people_array = nil == event['included'] ? [] : event['included'].map {|person| [person['id'],person['attributes']['full_name']]}
     people_array.each do |p|
-      person = Person.find_or_create_by!(identifier: p[0])
+      person = Person.find_or_create_by!(identifier: p[0], client_id: self.client_id)
       person.update_attribute(:name, p[1]) if p[1] != person.name
       registration = Registration.find_or_create_by(person: person, event: self)
       registration_ids.reject! {|i| registration.id == i}

@@ -8,6 +8,7 @@ DASH_VERSION = 'v1'
 class Client < ApplicationRecord
   has_many :access_tokens
   has_many :events
+  has_many :people
 
   def get_events(event_date)
     get_token if (access_token.nil? || access_token.expired?)
