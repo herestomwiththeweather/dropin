@@ -42,7 +42,7 @@ class Event < ApplicationRecord
       when GOALIES
         description =~ /Goalie/
       when FREESTYLE
-        description =~ /Freestyle/
+        description =~ /freestyle/i
       end
     end
 

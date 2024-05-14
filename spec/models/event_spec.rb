@@ -17,6 +17,7 @@ RSpec.describe Event, type: :model do
 
     it "should not allow the same identifier to be used by two events from the same client" do
       event = Event.new(client_id: other_client.id, identifier: '12345', category: Event::PLAYERS)
+      event.save
       expect(event.errors[:identifier]).to include("has already been taken")
     end
   end
@@ -67,6 +68,10 @@ RSpec.describe Event, type: :model do
 
     it "should not match blahblahblah" do
       expect(Event::category_match?(@blah_description, Event::GOALIES)).to be_falsey
+    end
+
+    it "should match lowercase freestyle" do
+      expect(Event::category_match?('freestyle', Event::FREESTYLE)).to be_truthy
     end
   end
 end
