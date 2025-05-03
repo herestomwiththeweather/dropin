@@ -1,0 +1,9 @@
+<p style="color: green"><%= notice %></p>
+
+<div id="clients">
+  <% @clients.each do |client| %>
+    <p>
+      <%= link_to client.company, [:admin, client] %>
+    </p>
+  <% end %>
+</div>

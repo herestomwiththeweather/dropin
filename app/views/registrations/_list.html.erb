@@ -1,6 +1,8 @@
 <%= turbo_frame_tag("event_#{event.id}-registrations") do %>
+<div style="font-size: <%= event&.client&.fontsize || 1 %>em;">
   <% event.registrations.each do |registration| %>
     <%= render(registration) %>
   <% end %>
+</div>
 <% end %>
 
