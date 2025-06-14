@@ -74,7 +74,7 @@ class Event < ApplicationRecord
 
     def upcoming_event_by_category(event_category)
       # find the earliest start_at after the current time (minus 1.5 hours)
-      where(category: event_category).where('start_at > ?', 90.minutes.ago).order('start_at ASC').first
+      where(category: event_category).where('start_at > ?', 90.minutes.ago).by_client_id(DEFAULT_CLIENT_ID).order('start_at ASC').first
     end
 
     def upcoming_event
