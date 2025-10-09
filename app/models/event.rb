@@ -125,6 +125,10 @@ class Event < ApplicationRecord
     registration_ids = self.registrations.map(&:id)
     update_attribute(:last_fetched_at, Time.now)
     event_response = client.get_event(identifier)
+    if !event_response.is_a?(Net::HTTPSuccess)
+      Rails.logger.info "#{self.class}#{__method__} error: #{event_response.code}: #{event_response.message}"
+    end
+
     event = JSON.parse(event_response.body)
     people_array = nil == event['included'] ? [] : event['included'].map {|person| [person['id'],person['attributes']['full_name']]}
     people_array.each do |p|
