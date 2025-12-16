@@ -118,7 +118,7 @@ class Event < ApplicationRecord
   end
 
   def cached_people
-    CATEGORY_FULL_NAME[self.category] ? people.map(&:name) : people.map(&:short_name)
+    CATEGORY_FULL_NAME[self.category] ? people.map(&:name_with_age) : people.map(&:short_name)
   end
 
   def refresh_people
@@ -130,10 +130,12 @@ class Event < ApplicationRecord
     end
 
     event = JSON.parse(event_response.body)
-    people_array = nil == event['included'] ? [] : event['included'].map {|person| [person['id'],person['attributes']['full_name']]}
+    people_array = nil == event['included'] ? [] : event['included'].map {|person| [person['id'],person['attributes']['full_name'],person['attributes']['birthdate']]}
     people_array.each do |p|
+      date = Date.iso8601(p[2])
       person = Person.find_or_create_by!(identifier: p[0], client_id: self.client_id)
       person.update_attribute(:name, p[1]) if p[1] != person.name
+      person.update_attribute(:birthdate_at, Time.zone.local(date.year, date.month, date.day)) if nil == person.birthdate_at
       registration = Registration.find_or_create_by(person: person, event: self)
       registration_ids.reject! {|i| registration.id == i}
     end
@@ -143,7 +145,16 @@ class Event < ApplicationRecord
       Rails.logger.info "Deleting registration for #{p.name} (#{p.id}) for event #{self.id}"
       registration_to_delete.destroy
     end
-    people_array.map {|p| CATEGORY_FULL_NAME[self.category] ? p[1] : p[1][0..p[1].index(' ')+1].concat('.')}
+    people_array.map do |p|
+      if CATEGORY_FULL_NAME[self.category]
+        date = Date.iso8601(p[2])
+        age = Time.current.year - date.year
+        age -= 1 if Time.current.month < date.month || (Time.current.month == date.month && Time.current.day < date.day)
+        "#{p[1]} (#{age})"
+      else
+        p[1][0..p[1].index(' ')+1].concat('.')
+      end
+    end
   end
 
   def refresh_data?
